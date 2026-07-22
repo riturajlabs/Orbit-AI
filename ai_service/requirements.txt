@@ -74,3 +74,4 @@ wheel==0.42.0
 xmltodict==0.13.0
 yq==3.1.0
 zope.interface==6.1
+uvicorn[standard]

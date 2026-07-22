@@ -45,7 +45,7 @@ def get_embedding_model():
 
 
         embedding_model = SentenceTransformer(
-            "./models/all-MiniLM-L6-v2"
+            "sentence-transformers/all-MiniLM-L6-v2"
         )
 
 
