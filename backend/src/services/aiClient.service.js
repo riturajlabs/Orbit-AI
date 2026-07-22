@@ -6,16 +6,13 @@ process.env.AI_SERVICE_URL ||
 'http://127.0.0.1:8000';
 
 
-
 export const generateAIReply = async ({
     prompt,
-    messages=[],
+    messages = [],
     sessionId,
 })=>{
 
-
     try{
-
 
         const response = await axios.post(
             `${AI_SERVICE_URL}/chat`,
@@ -24,19 +21,22 @@ export const generateAIReply = async ({
                 messages,
                 sessionId,
             },
+            {
+                headers:{
+                    'x-api-key': process.env.AI_SERVICE_KEY,
+                },
+            },
         );
 
 
         return response.data.response;
 
 
-
     }catch(error){
-
 
         console.error(
             'AI Service Error:',
-            error.message,
+            error.response?.data || error.message,
         );
 
 
@@ -45,6 +45,5 @@ export const generateAIReply = async ({
         );
 
     }
-
 
 };
