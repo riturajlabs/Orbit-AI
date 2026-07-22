@@ -1,5 +1,5 @@
 {
-  "name": "ai-chatbot-server",
+  "name": "Orbit-AI-server",
   "version": "1.0.0",
   "description": "Production-ready backend server for AI Chatbot using Node.js, Express, MongoDB, and Groq API",
   "main": "src/server.js",
@@ -17,8 +17,8 @@
     "jwt",
     "mvc"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "Ritu Raj",
+  "license": "MIT",
   "dependencies": {
     "axios": "^1.18.1",
     "bcryptjs": "^2.4.3",
