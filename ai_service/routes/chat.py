@@ -1,8 +1,8 @@
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Depends
 from pydantic import BaseModel, Field
-import logging 
+import logging
 
-# Sirf ek import! Kyunki hamara orchestrator sab khud handle karega
+from core.security import verify_api_key
 from chains.chat_chain import generate_chat_response
 
 router = APIRouter()
@@ -20,7 +20,10 @@ def get_user_id(session_id: str) -> str:
         return session_id.split("_")[0]
     return session_id
 
-@router.post("/chat")
+@router.post(
+    "/chat",
+    dependencies=[Depends(verify_api_key)]
+)
 async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
     # Safely extract the prompt
     user_prompt = request.prompt or request.message
