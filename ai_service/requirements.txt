@@ -5,16 +5,17 @@ python-dotenv
 pydantic-settings
 
 groq
+
 langchain
 langchain-core
 langchain-groq
 langchain-google-genai
 langchain-mongodb
 
-chromadb
+chromadb==0.5.23
 
 sentence-transformers==3.3.1
-transformers
+transformers==4.46.3
 
 pymongo
 motor
