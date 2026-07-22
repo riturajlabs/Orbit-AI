@@ -352,7 +352,7 @@ Distributed under the MIT License. See `LICENSE` file for more information.
 *B.Sc Artificial Intelligence & Machine Learning Student | Full Stack Developer | AI Enthusiast*
 
 - **GitHub:** [@riturajlabs](https://github.com/riturajlabs)
-- **Connect:** [riturajlabs](https://github.com/riturajlabs)
+- **Linkedin:** [@riturajlabs](https://linkedin/in/riturajlabs)
 
 <div align="center">
   <br/>
