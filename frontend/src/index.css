@@ -1323,7 +1323,7 @@ html[data-bs-theme="light"] .auth-card {
   }
 
   .page-shell {
-    padding: 10px;
+    padding:10px;
     height: 100dvh;
   }
 
@@ -1369,7 +1369,7 @@ html[data-bs-theme="light"] .auth-card {
   }
 
   .chat-input-shell {
-    padding: 10px;
+    padding: 0px;
   }
 
   .chat-input-card {
@@ -1395,7 +1395,12 @@ html[data-bs-theme="light"] .auth-card {
   .send-text {
     display: none;
   }
-
+  .empty-state{
+    padding: 24px 16px;
+  }
+  .chat-area__inner {
+    gap: 10px;
+  }
   .chat-send-button i {
     margin: 0 !important;
     font-size: 18px;
@@ -1618,4 +1623,15 @@ html[data-bs-theme="light"] .chat-menu-btn {
 html[data-bs-theme="light"] .chat-menu-btn:hover {
   background: #ffffff;
   border-color: rgba(35, 197, 142, 0.5); /* Brand color outline on hover */
+}
+
+
+.chat-window__menu-button,
+.chat-window__menu-button:hover,
+.chat-window__menu-button:focus,
+.chat-window__menu-button:focus-visible,
+.chat-window__menu-button:active {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }

@@ -91,7 +91,7 @@ export default function Sidebar() {
           </div>
           <button
             type="button"
-            className="btn btn-sm sidebar__close d-lg-none"
+            className="btn btn-sm sidebar__close d-lg-none chat-window__menu-button"
             onClick={() => setIsSidebarOpen(false)}
             aria-label="Close sidebar"
           >

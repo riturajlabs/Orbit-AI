@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
-
+import api from '../services/api';
 
 
 export default function Profile() {
@@ -56,44 +56,53 @@ export default function Profile() {
 };
 
   const handleUpdateProfile = async (e) => {
-    e.preventDefault();
-    setIsSaving(true);
-    setSuccessMsg('');
-    setErrorMsg('');
+  e.preventDefault();
 
-    try {
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('username', username);
-      
-      if (avatarFile) {
-        formData.append('avatar', avatarFile); 
-      }
+  setIsSaving(true);
+  setSuccessMsg('');
+  setErrorMsg('');
 
-      const response = await fetch('http://localhost:5000/api/auth/profile', {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}` 
-        },
-        body: formData
-      });
+  try {
+    const formData = new FormData();
 
-      const data = await response.json();
+    formData.append('name', name);
+    formData.append('username', username);
 
-      if (response.ok) {
-        setSuccessMsg('Profile updated successfully!'); 
-        updateUser(data.data.user);
-        setTimeout(() => setSuccessMsg(''), 3000); 
-      } else {
-        setErrorMsg(data.message || 'Failed to update profile');
-      }
-    } catch (error) {
-      console.error(error);
-      setErrorMsg('Something went wrong. Please try again.');
-    } finally {
-      setIsSaving(false);
+    if (avatarFile) {
+      formData.append('avatar', avatarFile);
     }
-  };
+
+    const response = await api.put(
+      '/auth/profile',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    const data = response.data;
+
+    setSuccessMsg('Profile updated successfully!');
+    updateUser(data.data.user);
+
+    setTimeout(() => {
+      setSuccessMsg('');
+    }, 3000);
+
+  } catch (error) {
+    console.error(error);
+
+    setErrorMsg(
+      error.response?.data?.message ||
+      'Something went wrong. Please try again.'
+    );
+
+  } finally {
+    setIsSaving(false);
+  }
+};
 
   return (
     <div className="page-shell auth-shell">
