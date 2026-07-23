@@ -81,18 +81,8 @@ export default function Profile() {
       const data = await response.json();
 
       if (response.ok) {
-        setSuccessMsg('Profile updated successfully!');
-
-        console.log(
-            "UPDATED USER",
-            data.data.user
-            );
-        
-        // 👇 MAIN FIX: Backend se aayi nayi user details ko Context me update kar do
+        setSuccessMsg('Profile updated successfully!'); 
         updateUser(data.data.user);
-        
-        // Timeout aur window.location.reload() hata diya!
-        // Ab React apne aap Sidebar aur Profile photo bina page load ke badal dega.
         setTimeout(() => setSuccessMsg(''), 3000); 
       } else {
         setErrorMsg(data.message || 'Failed to update profile');

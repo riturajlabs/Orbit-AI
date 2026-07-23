@@ -144,7 +144,7 @@ export function ChatProvider({ children }) {
       try {
         const response = await chatApi.getChatMessages(conversationId);
         const messages = (response.data?.data || []).map(mapMessage);
-        // console.log("LOADED MESSAGES FROM API", messages);
+      
 
         setConversations((current) =>
           current.map((conversation) =>

@@ -40,8 +40,6 @@ router.put(
  upload.single('avatar'),
  (req,res,next)=>{
 
-    console.log('MULTER FILE:', req.file);
-
     next();
 
  },

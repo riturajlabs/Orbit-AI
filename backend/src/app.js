@@ -40,7 +40,7 @@ app.use(cors({
       return callback(null, true);
     }
 
-    console.log('Blocked CORS Origin:', origin);
+    
 
     return callback(null, false);
   },
