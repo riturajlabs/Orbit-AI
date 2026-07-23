@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# Importing the chat router we created earlier
+# Importing the chat router
 from routes.chat import router
+
 
 app = FastAPI(
     title="Orbit AI Service",
@@ -10,23 +11,65 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configure CORS to allow frontend connections
+
+# ==============================
+# CORS Configuration
+# ==============================
+
 app.add_middleware(
     CORSMiddleware,
-    # In production, replace "*" with your actual frontend URLs (e.g., ["https://orbit-ai.com"])
-    allow_origins=["*"], 
+
+    allow_origins=[
+        "https://orbit-ai-client.vercel.app",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all HTTP methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allows all headers
+
+    allow_methods=[
+        "*"
+    ],
+
+    allow_headers=[
+        "*"
+    ],
 )
 
-# Register the routes
+
+# ==============================
+# Register API Routes
+# ==============================
+
 app.include_router(router)
+
+
+# ==============================
+# Root Endpoint
+# Used for basic service check
+# ==============================
 
 @app.api_route("/", methods=["GET", "HEAD"])
 async def root():
+
     return {
-        "status":"Orbit AI Service Running 🚀",
-        "database":"Connected",
-        "vector_store":"Ready"
+        "status": "Orbit AI Service Running 🚀",
+        "database": "Connected",
+        "vector_store": "Ready"
+    }
+
+
+
+# ==============================
+# Health Check Endpoint
+# Used by UptimeRobot / Monitoring
+# ==============================
+
+@app.api_route("/health", methods=["GET", "HEAD"])
+async def health():
+
+    return {
+        "status": "healthy",
+        "service": "Orbit AI",
+        "version": "1.0.0"
     }
