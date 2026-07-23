@@ -23,11 +23,10 @@ app.add_middleware(
 # Register the routes
 app.include_router(router)
 
-@app.get("/")
-def home():
-    """Health check endpoint for monitoring."""
+@app.api_route("/", methods=["GET", "HEAD"])
+async def root():
     return {
-        "status": "Orbit AI Service Running 🚀",
-        "database": "Connected",
-        "vector_store": "Ready"
+        "status":"Orbit AI Service Running 🚀",
+        "database":"Connected",
+        "vector_store":"Ready"
     }
