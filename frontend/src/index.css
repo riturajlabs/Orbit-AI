@@ -504,6 +504,10 @@ html[data-bs-theme="light"] .chat-window {
   overflow-y: auto;
   overflow-x: hidden;
   min-height: 0;
+   overflow-y: scroll;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 .message-row {
@@ -1644,4 +1648,18 @@ html[data-bs-theme="light"] .chat-menu-btn:hover {
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
+}
+.message-bubble__content pre {
+  max-height: none;
+  overscroll-behavior: contain;
+}
+
+.streaming-code{
+  white-space:pre-wrap;
+  font-family:"Fira Code",monospace;
+  background:#0d1117;
+  color:#fff;
+  padding:16px;
+  border-radius:14px;
+  overflow-x:auto;
 }

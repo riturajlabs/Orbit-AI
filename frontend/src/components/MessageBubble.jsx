@@ -67,6 +67,10 @@ export default function MessageBubble({ message }) {
   const [displayContent,setDisplayContent]=useState(
     message.content
 );
+const isStreamingCode =
+    message.isNew &&
+    displayContent.includes("```") &&
+    !displayContent.trim().endsWith("```");
 
   useEffect(() => {
 
@@ -83,30 +87,80 @@ export default function MessageBubble({ message }) {
   }
 
 
-  let index = -3;
+  const parts = message.content.split(/(```[\s\S]*?```)/g);
+
+
+  let partIndex = 0;
+  let charIndex = 0;
+
+  let result = "";
+
 
   setDisplayContent("");
+
 
 
   const interval = setInterval(() => {
 
 
-    setDisplayContent((prev) =>
-      prev + message.content.slice(index,index+3)
-    );
-
-
-    index += 3;
-
-
-    if(index >= message.content.length){
+    if (partIndex >= parts.length) {
 
       clearInterval(interval);
+      return;
 
     }
 
 
-  },15);
+    const currentPart = parts[partIndex];
+
+
+
+    // CODE BLOCK
+    if(currentPart.startsWith("```")){
+
+
+      result += currentPart;
+
+      setDisplayContent(result);
+
+
+      partIndex++;
+      charIndex = 0;
+
+
+      return;
+
+    }
+
+
+
+    // NORMAL TEXT
+    const chunk = currentPart.slice(
+      charIndex,
+      charIndex + 5
+    );
+
+
+    result += chunk;
+
+
+    setDisplayContent(result);
+
+
+    charIndex += 5;
+
+
+
+    if(charIndex >= currentPart.length){
+
+      partIndex++;
+      charIndex=0;
+
+    }
+
+
+
+  },20);
 
 
 
@@ -114,9 +168,9 @@ export default function MessageBubble({ message }) {
 
 
 },[
-  message.content,
-  isUser,
-  message.isNew
+ message.content,
+ isUser,
+ message.isNew
 ]);
 
   return (
@@ -142,34 +196,54 @@ export default function MessageBubble({ message }) {
         </div>
 
         <div className="message-bubble__content">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            components={{
-              pre({ children }) {
-                return <>{children}</>;
-              },
-              code({ children, className }) {
-                const match = /language-(\w+)/.exec(className || "");
-                const isBlock = Boolean(match);
 
-                if (isBlock) {
-                  return (
-                    <CodeBlock language={match[1]}>
-                      {String(children).replace(/\n$/, "")}
-                    </CodeBlock>
-                  );
-                }
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+
+            pre({children}) {
+              return <>{children}</>;
+            },
+
+
+            code({children,className}) {
+
+              const match =
+              /language-(\w+)/.exec(className || "");
+
+
+              const isBlock = Boolean(match);
+
+
+              if(isBlock){
 
                 return (
-                  <code className={className}>
-                    {children}
-                  </code>
+                  <CodeBlock
+                    language={match[1]}
+                  >
+                    {String(children).replace(/\n$/,"")}
+                  </CodeBlock>
                 );
+
               }
-            }}
-          >
-            {displayContent}
-          </ReactMarkdown>
+
+
+              return (
+                <code className={className}>
+                  {children}
+                </code>
+              );
+
+            }
+
+          }}
+        >
+
+        {displayContent}
+
+        </ReactMarkdown>
+
+
         </div>
       </div>
     </div>
