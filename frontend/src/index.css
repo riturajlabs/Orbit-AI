@@ -1326,16 +1326,21 @@ html[data-bs-theme="light"] .auth-card {
     padding:10px;
     height: 100dvh;
   }
-
+  .page-shell--home{
+    padding: 0;
+    border-radius: 0% !important;
+  }
   .app-shell {
     display: flex;
     gap: 1px;
-    padding: 10px;
+    padding: 0px;
+    border-radius: 0px;
   }
 
   .hero-card {
     grid-template-columns: 1fr;
-    padding: 24px;
+    padding: 15px;
+    gap: 2rem;
   }
 
   .topbar {
@@ -1358,6 +1363,9 @@ html[data-bs-theme="light"] .auth-card {
 
   .chat-window__header {
     padding: 14px 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
 
   .chat-window__body {
@@ -1496,6 +1504,7 @@ html[data-bs-theme="light"] .auth-card {
   .mini-features div {
     padding: 12px 5px;
     font-size: 12px;
+    text-align: center;
   }
 
   .mini-features i {
@@ -1506,6 +1515,7 @@ html[data-bs-theme="light"] .auth-card {
     transform: scale(.92);
     transform-origin: top center;
   }
+  
 
 }
 
