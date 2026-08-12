@@ -381,6 +381,11 @@ Rules:
         )
 
 
+        if "No AI provider is configured" in str(e):
+
+            return "AI_PROVIDER_NOT_CONFIGURED"
+
+
         return (
 
             "I'm currently experiencing a temporary issue. "

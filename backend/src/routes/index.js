@@ -6,6 +6,7 @@
 import express from 'express';
 import authRoutes from './authRoutes.js';
 import chatRoutes from './chatRoutes.js';
+import { getProviderStatus } from '../controllers/providerController.js';
 
 const router = express.Router();
 
@@ -17,6 +18,9 @@ router.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+// AI provider / service status endpoint
+router.get('/providers/status', getProviderStatus);
 
 // API Routes
 router.use('/auth', authRoutes);

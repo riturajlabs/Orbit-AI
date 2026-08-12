@@ -10,8 +10,33 @@ import {
     getOptimizedMaxTokens,
 } from '../services/ai.service.js';
 
-const groq = new Groq({
-    apiKey: process.env.GROQ_API_KEY,
+const isGroqConfigured = Boolean(process.env.GROQ_API_KEY);
+
+let groq = null;
+
+if (isGroqConfigured) {
+    try {
+        groq = new Groq({
+            apiKey: process.env.GROQ_API_KEY,
+        });
+
+        console.log('[Groq] Client initialized (API key set)');
+    } catch (error) {
+        console.error('[Groq] Client initialization failed:', error.message);
+        groq = null;
+    }
+} else {
+    console.warn('[Groq] GROQ_API_KEY is not set. Direct Groq client is disabled.');
+}
+
+export const getGroqProviderStatus = () => ({
+    provider: 'groq',
+    configured: isGroqConfigured,
+    clientReady: Boolean(groq),
+    model: DEFAULT_GROQ_MODEL,
+    message: isGroqConfigured
+        ? 'Groq is configured and ready.'
+        : 'GROQ_API_KEY is not set. Groq is unavailable.',
 });
 
 const getTemperature = (prompt) => {
@@ -100,6 +125,10 @@ export const generateGroqReply = async ({
     prompt,
     modelName = DEFAULT_GROQ_MODEL,
 }) => {
+    if (!groq) {
+        throw new Error('Groq is not configured. GROQ_API_KEY is missing.');
+    }
+
     try {
         const safePrompt = String(prompt || '').trim();
         const groqMessages = buildGroqMessages({

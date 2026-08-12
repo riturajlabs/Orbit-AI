@@ -3,9 +3,48 @@ import Message from '../models/Message.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/appError.js';
 import { buildConversationTitle, buildGroqHistory } from '../utils/chatHelpers.js';
-import { generateAIReply } from '../services/aiClient.service.js';
+import {
+  generateAIReply,
+  AIProviderError,
+  AIProviderErrorCode,
+  getAIServiceConfig,
+} from '../services/aiClient.service.js';
+import { generateGroqReply } from '../config/groq.js';
 
 const DEFAULT_GROQ_MODEL = 'llama-3.3-70b-versatile';
+
+const buildFallbackReply = (error) => {
+  if (error instanceof AIProviderError) {
+    switch (error.code) {
+      case AIProviderErrorCode.PROVIDER_NOT_CONFIGURED:
+        return 'Groq is not configured yet. The backend is ready to stream a response once the API key is available.';
+      case AIProviderErrorCode.AI_SERVICE_AUTH_FAILED:
+        return 'AI service rejected the request. Check that AI_SERVICE_KEY matches between the backend and the AI service.';
+      case AIProviderErrorCode.AI_SERVICE_UNREACHABLE:
+        return 'AI service is unreachable. Verify the AI service is deployed and AI_SERVICE_URL points to it.';
+      case AIProviderErrorCode.RATE_LIMITED:
+        return 'AI service is busy right now. Please try again in a moment.';
+      case AIProviderErrorCode.AI_SERVICE_ERROR:
+      default:
+        return 'AI service returned an error. Please try again shortly.';
+    }
+  }
+
+  if (error instanceof Error) {
+    const message = error.message || '';
+
+    if (
+      message.toLowerCase().includes('groq is not configured') ||
+      message.toLowerCase().includes('groq_api_key is missing')
+    ) {
+      return 'Groq is not configured yet. The backend is ready to stream a response once the API key is available.';
+    }
+
+    return message || 'AI service temporarily unavailable. Please try again shortly.';
+  }
+
+  return 'AI service temporarily unavailable. Please try again shortly.';
+};
 
 const toMessageDoc = (chatId, role, content) => ({
   chatId,
@@ -172,6 +211,7 @@ export const sendChatMessage = asyncHandler(async (req, res) => {
   })));
 
   let assistantReply = null;
+  let lastChatError = null;
 
   try {
     assistantReply = await generateAIReply({
@@ -186,11 +226,32 @@ export const sendChatMessage = asyncHandler(async (req, res) => {
 
   });
   } catch (error) {
-    console.warn('[Chat] Groq reply failed, returning fallback response:', error.message);
+    lastChatError = error;
+
+    console.warn(
+      '[Chat] AI service reply failed. Code:',
+      error?.code || 'UNKNOWN',
+      'Message:',
+      error?.message,
+      'Config:',
+      JSON.stringify(getAIServiceConfig()),
+    );
+
+    try {
+      assistantReply = await generateGroqReply({
+        messages: groqHistory,
+        prompt: message.trim(),
+        modelName: chat.modelName || DEFAULT_GROQ_MODEL,
+      });
+
+      lastChatError = null;
+    } catch (groqError) {
+      console.error('[Chat] Direct Groq fallback also failed:', groqError.message);
+      lastChatError = groqError;
+    }
   }
 
-  const fallbackReply = 'Groq is not configured yet. The backend is ready to stream a response once the API key is available.';
-  const replyText = assistantReply || fallbackReply;
+  const replyText = assistantReply || buildFallbackReply(lastChatError);
 
   const modelMessage = await Message.create(toMessageDoc(chat._id, 'model', replyText));
 

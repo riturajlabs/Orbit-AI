@@ -47,6 +47,13 @@ async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
             background_tasks=background_tasks
         )
 
+        # No provider configured
+        if response_content == "AI_PROVIDER_NOT_CONFIGURED":
+            return {
+                "response": "Groq is not configured yet. The backend is ready to stream a response once the API key is available.",
+                "error_type": "not_configured"
+            }
+
         return {
             "response": response_content
         }
