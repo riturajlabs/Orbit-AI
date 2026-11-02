@@ -101,11 +101,7 @@ def generate_chat_response(
 
 
 
-        logger.info(
-
-            f"Memory Context Loaded: {long_term_context}"
-
-        )
+        logger.info("Memory context loaded.")
 
 
 

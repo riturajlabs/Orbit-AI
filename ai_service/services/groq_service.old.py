@@ -12,11 +12,10 @@ from core.token import get_optimized_max_tokens
 load_dotenv()
 
 
-DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile"
+DEFAULT_GROQ_MODEL = "llama-3.1-8b-instant"
 
 
 ALLOWED_MODELS = [
-    "llama-3.3-70b-versatile",
     "llama-3.1-8b-instant",
 ]
 

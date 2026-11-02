@@ -49,10 +49,10 @@ async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
 
         # No provider configured
         if response_content == "AI_PROVIDER_NOT_CONFIGURED":
-            return {
-                "response": "Groq is not configured yet. The backend is ready to stream a response once the API key is available.",
-                "error_type": "not_configured"
-            }
+            raise HTTPException(
+                status_code=503,
+                detail="AI provider is not configured.",
+            )
 
         return {
             "response": response_content
@@ -64,13 +64,12 @@ async def chat(request: ChatRequest, background_tasks: BackgroundTasks):
         
         # Groq Rate Limit (429) Check
         if "429" in error_msg or "rate limit" in error_msg.lower():
-            return {
-                "response": "⚠️ System Overload: I am currently processing too many requests. Please try again in a few moments.",
-                "error_type": "rate_limit"
-            }
-        
-        # Generic fallback for other errors
-        return {
-            "response": "Oops! I'm experiencing a temporary technical issue on my server. Please try again shortly.",
-            "error_type": "internal_error"
-        }
+            raise HTTPException(
+                status_code=429,
+                detail="AI provider is rate limited.",
+            )
+
+        raise HTTPException(
+            status_code=503,
+            detail="AI provider request failed.",
+        )
