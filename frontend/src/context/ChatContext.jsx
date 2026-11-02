@@ -39,7 +39,7 @@ const mapMessage = (message) => ({
 const mapChatSummary = (chat) => ({
   id: chat.id || chat._id,
   title: chat.title || 'New Conversation',
-  modelName: chat.modelName || 'llama-3.3-70b-versatile',
+  modelName: chat.modelName || 'llama-3.1-8b-instant',
   updatedAt: chat.updatedAt || chat.createdAt || new Date().toISOString(),
   messageCount: chat.messageCount || 0,
   messages: Array.isArray(chat.messages) ? chat.messages.map(mapMessage) : [],

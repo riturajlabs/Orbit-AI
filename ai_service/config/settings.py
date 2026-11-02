@@ -15,7 +15,7 @@ def _mask(value: str) -> str:
 class Settings(BaseSettings):
     # Primary LLM provider
     GROQ_API_KEY: str = ""
-    GROQ_MODEL: str = "llama-3.3-70b-versatile"
+    GROQ_MODEL: str = "llama-3.1-8b-instant"
 
     # Fallback LLM provider (optional; missing key must not crash the service)
     GEMINI_API_KEY: str = ""

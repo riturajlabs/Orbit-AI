@@ -1,4 +1,4 @@
-export const DEFAULT_GROQ_MODEL = 'llama-3.3-70b-versatile';
+export const DEFAULT_GROQ_MODEL = 'llama-3.1-8b-instant';
 
 export const SYSTEM_PROMPT = `
 

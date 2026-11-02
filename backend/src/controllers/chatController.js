@@ -11,7 +11,7 @@ import {
 } from '../services/aiClient.service.js';
 import { generateGroqReply } from '../config/groq.js';
 
-const DEFAULT_GROQ_MODEL = 'llama-3.3-70b-versatile';
+const DEFAULT_GROQ_MODEL = 'llama-3.1-8b-instant';
 
 const buildFallbackReply = (error) => {
   if (error instanceof AIProviderError) {
