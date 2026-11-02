@@ -370,6 +370,9 @@ export function ChatProvider({ children }) {
             conversation.id === conversationId
               ? {
                   ...conversation,
+                  messages: (conversation.messages || []).filter(
+                    (message) => message.id !== userMessage.id
+                  ),
                   updatedAt: new Date().toISOString(),
                 }
               : conversation

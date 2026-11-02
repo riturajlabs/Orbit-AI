@@ -382,10 +382,4 @@ Rules:
             return "AI_PROVIDER_NOT_CONFIGURED"
 
 
-        return (
-
-            "I'm currently experiencing a temporary issue. "
-
-            "Please try again in a moment."
-
-        )
+        raise RuntimeError("AI provider request failed.") from e

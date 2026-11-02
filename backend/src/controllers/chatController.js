@@ -13,20 +13,20 @@ import { generateGroqReply } from '../config/groq.js';
 
 const DEFAULT_GROQ_MODEL = 'openai/gpt-oss-20b';
 
-const buildFallbackReply = (error) => {
+export const getChatFailure = (error) => {
   if (error instanceof AIProviderError) {
     switch (error.code) {
       case AIProviderErrorCode.PROVIDER_NOT_CONFIGURED:
-        return 'Groq is not configured yet. The backend is ready to stream a response once the API key is available.';
+        return new AppError('AI provider is not configured.', 503);
       case AIProviderErrorCode.AI_SERVICE_AUTH_FAILED:
-        return 'AI service rejected the request. Check that AI_SERVICE_KEY matches between the backend and the AI service.';
+        return new AppError('AI service authentication failed.', 502);
       case AIProviderErrorCode.AI_SERVICE_UNREACHABLE:
-        return 'AI service is unreachable. Verify the AI service is deployed and AI_SERVICE_URL points to it.';
+        return new AppError('AI service is temporarily unavailable.', 503);
       case AIProviderErrorCode.RATE_LIMITED:
-        return 'AI service is busy right now. Please try again in a moment.';
+        return new AppError('AI service is busy right now. Please try again shortly.', 429);
       case AIProviderErrorCode.AI_SERVICE_ERROR:
       default:
-        return 'AI service returned an error. Please try again shortly.';
+        return new AppError('AI service returned an error.', 503);
     }
   }
 
@@ -37,13 +37,13 @@ const buildFallbackReply = (error) => {
       message.toLowerCase().includes('groq is not configured') ||
       message.toLowerCase().includes('groq_api_key is missing')
     ) {
-      return 'Groq is not configured yet. The backend is ready to stream a response once the API key is available.';
+      return new AppError('AI provider is not configured.', 503);
     }
 
-    return message || 'AI service temporarily unavailable. Please try again shortly.';
+    return new AppError('AI service is temporarily unavailable.', 503);
   }
 
-  return 'AI service temporarily unavailable. Please try again shortly.';
+  return new AppError('AI service is temporarily unavailable.', 503);
 };
 
 const toMessageDoc = (chatId, role, content) => ({
@@ -251,7 +251,12 @@ export const sendChatMessage = asyncHandler(async (req, res) => {
     }
   }
 
-  const replyText = assistantReply || buildFallbackReply(lastChatError);
+  if (!assistantReply) {
+    await Message.findByIdAndDelete(userMessage._id);
+    throw getChatFailure(lastChatError);
+  }
+
+  const replyText = assistantReply;
 
   const modelMessage = await Message.create(toMessageDoc(chat._id, 'model', replyText));
 
