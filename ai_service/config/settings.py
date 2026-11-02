@@ -15,7 +15,7 @@ def _mask(value: str) -> str:
 class Settings(BaseSettings):
     # Primary LLM provider
     GROQ_API_KEY: str = ""
-    GROQ_MODEL: str = "llama-3.1-8b-instant"
+    GROQ_MODEL: str = "openai/gpt-oss-20b"
 
     # Fallback LLM provider (optional; missing key must not crash the service)
     GEMINI_API_KEY: str = ""
@@ -45,4 +45,6 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+if settings.GROQ_MODEL != "openai/gpt-oss-20b":
+    settings.GROQ_MODEL = "openai/gpt-oss-20b"
 settings.log_configuration()

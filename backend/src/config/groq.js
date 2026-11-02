@@ -105,7 +105,7 @@ const getTemperature = (prompt) => {
 
 const ALLOWED_MODELS = [
 
-    'llama-3.1-8b-instant',
+    'openai/gpt-oss-20b',
 
 ];
 
@@ -138,7 +138,7 @@ export const generateGroqReply = async ({
             model:getSafeModel(modelName),
             messages: groqMessages,
             temperature: getTemperature(safePrompt),
-            max_tokens: getOptimizedMaxTokens({
+            max_completion_tokens: getOptimizedMaxTokens({
                 messages,
                 prompt: safePrompt,
             }),
@@ -148,6 +148,29 @@ export const generateGroqReply = async ({
             response.choices[0]?.message?.content || 'Sorry, I could not generate a response.',
         );
     } catch (error) {
+        const selectedModel = getSafeModel(modelName);
+        const statusCode = Number(error?.status || error?.response?.status || 0) || null;
+        const requestId = error?.headers?.['x-groq-request-id']
+            || error?.response?.headers?.['x-groq-request-id']
+            || null;
+        const errorCategory = statusCode === 401
+            ? 'authentication'
+            : statusCode === 429
+                ? 'rate_limit'
+                : statusCode >= 500
+                    ? 'provider'
+                    : statusCode === 404
+                        ? 'model_or_endpoint'
+                        : 'request';
+
+        console.error('[Groq] Request failed', {
+            provider: 'groq',
+            model: selectedModel,
+            statusCode,
+            errorCategory,
+            requestId,
+        });
+
         const groqErrorMessage = getGroqErrorMessage(error);
 
         console.error('Groq Error:', groqErrorMessage);

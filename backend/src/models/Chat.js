@@ -21,7 +21,7 @@ const chatSchema = new mongoose.Schema(
     // Allows referencing the model used for the chat
     modelName: {
       type: String,
-      default: 'llama-3.1-8b-instant',
+      default: 'openai/gpt-oss-20b',
     },
   },
   {

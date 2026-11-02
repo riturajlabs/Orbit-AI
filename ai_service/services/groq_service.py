@@ -60,7 +60,7 @@ else:
 if settings.GROQ_API_KEY:
     try:
         groq_backup = ChatGroq(
-            model="llama-3.1-8b-instant",
+            model="openai/gpt-oss-20b",
             temperature=0.6,
             max_tokens=1024,
             api_key=settings.GROQ_API_KEY,

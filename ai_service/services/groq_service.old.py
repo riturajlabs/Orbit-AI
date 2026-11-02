@@ -12,11 +12,11 @@ from core.token import get_optimized_max_tokens
 load_dotenv()
 
 
-DEFAULT_GROQ_MODEL = "llama-3.1-8b-instant"
+DEFAULT_GROQ_MODEL = "openai/gpt-oss-20b"
 
 
 ALLOWED_MODELS = [
-    "llama-3.1-8b-instant",
+    "openai/gpt-oss-20b",
 ]
 
 
