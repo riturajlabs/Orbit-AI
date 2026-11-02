@@ -206,9 +206,19 @@ npm install
 ```
 Create a `.env` file in the `frontend/` directory and add:
 ```env
-VITE_API_URL=http://localhost:5000
+VITE_API_URL=http://localhost:5000/api
 VITE_AI_SERVICE_URL=http://localhost:8000
 ```
+
+For the deployed Vercel client, set `VITE_API_URL` in Vercel to the Node
+backend URL including the `/api` prefix:
+
+```env
+VITE_API_URL=https://orbit-ai-server-od3r.onrender.com/api
+```
+
+The client also appends `/api` when a configured URL omits it, but setting the
+complete URL explicitly is recommended.
 Start the frontend development server:
 ```bash
 npm run dev

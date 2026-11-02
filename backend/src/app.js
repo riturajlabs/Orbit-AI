@@ -31,12 +31,19 @@ const allowedOrigins = [
   'http://127.0.0.1:5174',
 ];
 
+const configuredOrigins = (process.env.CLIENT_URL || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const corsOrigins = [...new Set([...allowedOrigins, ...configuredOrigins])];
+
 app.use(cors({
   origin: function (origin, callback) {
 
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
+    if (corsOrigins.includes(origin)) {
       return callback(null, true);
     }
 
